@@ -24,16 +24,18 @@ aws emr create-cluster --name "Spark cluster with step" \
 aws emr add-steps --cluster-id <Your EMR Cluster ID> --steps Type=spark,Name=TestJob,Args=[--deploy-mode,cluster,--master,yarn,--conf,spark.yarn.submit.waitAppCompletion=true,s3a://your-bucket/code/pyspark_job2.py,s3a://your-source-bucket/data/data.csv,s3a://your-destination-bucket/test-output/],ActionOnFailure=CONTINUE
 ```
 
-## Some pySpark code
+## S3 Paths
+
+- ``s3:\\``: s3 which is also called classic (s3: filesystem for reading from or storing objects in Amazon S3 This has been deprecated and recommends using either the second or third generation library.
+- ``s3n:\\``: s3n uses native s3 object and makes easy to use it with Hadoop and other files systems. This is also not the recommended option.
+- ``s3a:\\``: s3a – This is a replacement of s3n which supports larger files and improves in performance.
+
+
+## Pyspark Code Snippets
 
 Read a CSV file, split by commas, and store it an RDD
 ```py
 rdd = sc.textFile('s3n://your-bucket/test.csv').map(lambda line: line.split(','))
-```
-
-Remove the header
-```py
-rdd = rdd.mapPartitionsWithIndex(lambda idx, it: (islice(it, 1, None) if idx == 0 else it))
 ```
 
 RDD to DF
@@ -41,20 +43,72 @@ RDD to DF
 df = rdd.toDF(['COL1', 'COL2', 'COL3', 'COL4'])
 ```
 
+Read a CSV file to DF
+
+```py
+# Reading a CSV
+df = spark.read.csv("filename.csv")
+
+# Reading a CSV with header
+df = spark.read.csv("filename.csv", header=True)
+
+# Reading a CSV using the load method
+df = spark.read.format("csv").load("filename.csv")
+
+# Reading a CSV using the load method with header
+df = spark.read.format("csv").option("header", "true").load("filename.csv")
+
+# The same goes for different formats
+df = spark.read.format("<file format>").load("filename.<format>")
+
+# Or using the given method
+df = spark.read.<format method>.("filename.<format>)
+```
+
 Replace 0 to null
 ```py
 df = df.withColumn('COL1', when(df['COL1'] == 0, 'null').otherwise(df['COL1']))
 ```
 
-Filter column
+Filtering
 ```py
-df = df.filter(df.col1 != 'null')
+# Filter your DataFrame with non-null values
+df = df.filter(df.column1 != 'null')
+
+# Filter your DataFrame and select a column
+df.filter(df.column1 > 20).select("column2").show()
+
+# Filter your DataFrame with AND
+df.filter((df.column1 > 20) & (df.column2 < 10)).select("column2").show()
+
+# Filter your DataFrame with OR
+df.filter((df.column1 > 20) | (df.column2 < 10)).select("column2").show()
 ```
 
-Write back to s3 and save in parquet format
+GroupBy 
+```py
+# GroupBy a column and count
+df.groupby("column").count().show()
+
+# GroupBy a column and sum
+df.groupby("column1").sum("column2").show()
+
+# GroupBy with multiple columns
+df.groupby("column1", "column2").count().show()
+
+# GroupBy with multiple columns and sum multiple columns
+df.groupby("column1", "column2").sum("column3", "column4").show()
+```
+
+Write back to s3 
 
 ```py
-df.write.parquet('s3n://your-bucket/test.parquet')
+# save in parquet format
+df.write.parquet('s3a://your-bucket/test.parquet')
+# save with header 
+df.write.option("header","true").parquet('s3a://your-bucket/test.parquet')
+# save in csv format
+df.write.csv("s3a://your-bucket/test.csv")
 ```
 
 ## View Log Files
