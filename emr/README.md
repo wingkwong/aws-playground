@@ -153,6 +153,52 @@ Open the Amazon EMR console -> Select Cluster -> Select View Jobs -> Select View
 
 You can also navigate to the Spark HistoryServer UI directly at ``http://master-public-dns-name:18080/``
 
+## Notebook
+
+Dataset Source: https://dj2taa9i652rf.cloudfront.net/
+
+```
+aws s3 ls s3://covid19-lake/safegraph-open-census-data/csv/data/
+2020-04-14 16:00:26    5853188 cbg_b00.csv
+2020-04-14 16:00:27  103987464 cbg_b01.csv
+2020-04-14 16:00:26   49434240 cbg_b02.csv
+2020-04-14 16:00:26   35330595 cbg_b03.csv
+2020-04-14 16:00:27   67026929 cbg_b07.csv
+2020-04-14 16:00:29  348314677 cbg_b08.csv
+2020-04-14 16:00:26  154882703 cbg_b09.csv
+2020-04-14 16:00:59  401362335 cbg_b11.csv
+2020-04-14 16:00:25   30214746 cbg_b12.csv
+2020-04-14 16:00:29  319142985 cbg_b14.csv
+2020-04-14 16:00:29  214808873 cbg_b15.csv
+2020-04-14 16:00:29  295345041 cbg_b19.csv
+2020-04-14 16:00:27   86140098 cbg_b20.csv
+2020-04-14 16:00:36  117175299 cbg_b21.csv
+2020-04-14 16:00:26   12906267 cbg_b22.csv
+2020-04-14 16:00:30  418569641 cbg_b23.csv
+2020-04-14 16:00:26 1095818025 cbg_b25.csv
+2020-04-14 16:00:27   85605814 cbg_b27.csv
+2020-04-14 16:00:32  390135948 cbg_b99.csv
+2020-04-14 16:00:28   99341995 cbg_c16.csv
+2020-04-14 16:00:27  187799316 cbg_c17.csv
+2020-04-14 16:00:35  411225125 cbg_c24.csv
+```
+
+```python
+spark.read.csv("s3://covid19-lake/safegraph-open-census-data/csv/data/cbg_b23.csv").count()
+```
+
+![image](https://user-images.githubusercontent.com/35857179/84880417-0f4a6f80-b0bf-11ea-8f02-77c370bd4cc5.png)
+
+### Common Issues
+
+- Failed to start a Notebook. Notebook is stopped. Service Role does not have the required permissions.
+
+    Make sure the role has ``AmazonElasticMapReduceEditorsRole`` policy. The default managed policy attached to ``EMR_Notebooks_DefaultRole`` is ``AmazonElasticMapReduceEditorsRole``. 
+
+- Failed to start Notebook Kernel. Error attempting to connect to Gateway server url 'http://localhost:17777'. Ensure gateway url is valid and the Gateway instance is running."
+
+    There seems to be an issue with 5.30.0. It works fine in 5.29.0. (As of 17/06/2020)
+
 # Useful links 
 - [Registry of Open Data on AWS](https://registry.opendata.aws/amazon-reviews/)
 - [Python For Data Science Cheat Sheet: PySpark - SQL Basics](https://s3.amazonaws.com/assets.datacamp.com/blog_assets/PySpark_SQL_Cheat_Sheet_Python.pdf)
