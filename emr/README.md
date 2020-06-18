@@ -111,6 +111,27 @@ df.write.option("header","true").parquet('s3a://your-bucket/test.parquet')
 df.write.csv("s3a://your-bucket/test.csv")
 ```
 
+## UDF
+
+```python
+def your_python_func(a,b,c,d,e,f):
+    # Your logic goes here
+    return ""
+
+your_udf = udf(lambda a,b,c,d,e,f: your_python_func(a,b,c,d,e,f), StringType())
+
+# Add a new column called NEW_COLUMN_NAME
+df = df.withColumn("NEW_COLUMN_NAME", your_udf(
+                        df.a,       # a must be found in df
+                        df.b,       # b must be found in df
+                        df.c,       # c must be found in df
+                        df.d,       # d must be found in df
+                        lit('e'),   # use lit for non-column parameters
+                        lit('f')    # use lit for non-column parameters
+                    )
+                )
+```
+
 ## View Log Files
 
 ### View Log Files on the Master Node
