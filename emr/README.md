@@ -70,6 +70,11 @@ Replace 0 to null
 df = df.withColumn('COL1', when(df['COL1'] == 0, 'null').otherwise(df['COL1']))
 ```
 
+Combine columns
+```py
+df = df.withColumn('NEW_COL', concat(df['COL1'], lit("-"),df['COL2'], lit("-")))
+```
+
 Filtering
 ```py
 # Filter your DataFrame with non-null values
@@ -118,7 +123,7 @@ def your_python_func(a,b,c,d,e,f):
     # Your logic goes here
     return ""
 
-your_udf = udf(lambda a,b,c,d,e,f: your_python_func(a,b,c,d,e,f), StringType())
+your_udf = udf(lambda a,b,c,d,e,f: your_python_func(a,b,c,d,e,f))
 
 # Add a new column called NEW_COLUMN_NAME
 df = df.withColumn("NEW_COLUMN_NAME", your_udf(
