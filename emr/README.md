@@ -225,6 +225,21 @@ spark.read.csv("s3://covid19-lake/safegraph-open-census-data/csv/data/cbg_b23.cs
 
     There seems to be an issue with 5.30.0. It works fine in 5.29.0. (As of 17/06/2020)
 
+# Lession Learnt
+
+- Parentheses are required for multiple conditions in filter
+
+    ```
+    df.filter(
+        (col("COL1") == a)
+        & (col("COL2") == b)
+        & (col("COL3") == c)
+        & (col("COL4") == d)
+    )
+    ```
+
+- You cannot pass dataframes into a UDF because they live in the spark context and they are only available as such inside the driver. Try to serialize it and broadcast it.
+
 # Useful links 
 - [Registry of Open Data on AWS](https://registry.opendata.aws/amazon-reviews/)
 - [Python For Data Science Cheat Sheet: PySpark - SQL Basics](https://s3.amazonaws.com/assets.datacamp.com/blog_assets/PySpark_SQL_Cheat_Sheet_Python.pdf)
