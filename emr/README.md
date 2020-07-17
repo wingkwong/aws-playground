@@ -244,6 +244,60 @@ spark.read.csv("s3://covid19-lake/safegraph-open-census-data/csv/data/cbg_b23.cs
 
 - Don't use much for-loop 
 
+- Pivot with agg
+
+    ```py
+    df.groupBy(["A", "B"])
+    .pivot("X")
+    .agg(
+        first("C").alias("D"),
+    )
+    ```
+
+    Expected to see 
+
+    ```
+    ['A',
+    'B',
+    '0_D',
+    '1_D',
+    '2_D',
+    '3_D',
+    '4_D']
+    ```
+
+    But it got 
+
+    ```py
+    ['A', 'B', '0', '1', '2', '3', '4']
+    ```
+
+    Sol: add a dummy column
+
+    ```py
+        df.groupBy(["A", "B"])
+        .pivot("X")
+        .agg(
+            first("C").alias("D"),
+            first(lit("")).alias("DUMMY"),
+        )
+    ```
+
+    ```
+    ['A',
+    'B',
+    '0_D',
+    '0_DUMMY',
+    '1_D',
+    '1_DUMMY',
+    '2_D',
+    '2_DUMMY',
+    '3_D',
+    '3_DUMMY',
+    '4_D',
+    '4_DUMMY']
+    ```
+
 # Useful links 
 - [Registry of Open Data on AWS](https://registry.opendata.aws/amazon-reviews/)
 - [Python For Data Science Cheat Sheet: PySpark - SQL Basics](https://s3.amazonaws.com/assets.datacamp.com/blog_assets/PySpark_SQL_Cheat_Sheet_Python.pdf)
