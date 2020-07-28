@@ -31,6 +31,23 @@ aws emr add-steps --cluster-id <Your EMR Cluster ID> --steps Type=spark,Name=Tes
 - ``s3a:\\``: s3a – This is a replacement of s3n which supports larger files and improves in performance.
 
 
+## Update Configuration Object
+
+```json
+[
+     {
+      "InstanceGroupId":"ig-1XXXXXXXXXXX9",
+      "Configurations": []
+   }
+]
+```
+
+Then run
+
+```
+aws emr modify-instance-groups --cluster-id j-1XXXXXXXXXXX9 --instance-groups file://new-configuration-object.json
+```
+
 ## Pyspark Code Snippets
 
 Read a CSV file, split by commas, and store it an RDD
@@ -296,6 +313,29 @@ spark.read.csv("s3://covid19-lake/safegraph-open-census-data/csv/data/cbg_b23.cs
     '3_DUMMY',
     '4_D',
     '4_DUMMY']
+    ```
+- Python Version
+
+    Amazon EMR release versions 4.6.0-5.19.0: Python 3.4 is installed on the cluster instances. Python 2.7 is the system default.
+    
+    Amazon EMR release versions 5.20.0 and later: Python 3.6 is installed on the cluster instances. Python 2.7 is the system default.
+
+    Add a configuration object similar to the following when you launch a cluster using Amazon EMR release version 4.6.0 or later:
+
+    ```json
+    [
+    {
+        "Classification": "spark-env",
+        "Configurations": [
+        {
+            "Classification": "export",
+            "Properties": {
+                "PYSPARK_PYTHON": "/usr/bin/python3"
+            }
+        }
+        ]
+    }
+    ]
     ```
 
 # Useful links 
