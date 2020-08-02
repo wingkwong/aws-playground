@@ -1,13 +1,13 @@
 # Lambda
 
-If your code is not executing, you aren’t being charged!
+**If your code is not executing, you aren’t being charged!**
 
 ## Optimize Costs
 
-- colocating aws regions
+- Colocating aws regions
     - moving your functions to the same region to reduce data transfer between those services
-- refractoring and rewriting 
-- caching
+- Refractoring and rewriting 
+- Caching
 
 ## Limits
 
