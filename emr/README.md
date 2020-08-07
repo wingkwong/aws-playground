@@ -1,5 +1,6 @@
 # Amazon Elastic MapReduce (EMR)
 
+```
 EEEEEEEEEEEEEEEEEEEE MMMMMMMM           MMMMMMMM RRRRRRRRRRRRRRR
 E::::::::::::::::::E M:::::::M         M:::::::M R::::::::::::::R
 EE:::::EEEEEEEEE:::E M::::::::M       M::::::::M R:::::RRRRRR:::::R
@@ -13,7 +14,7 @@ EE:::::EEEEEEEEE:::E M::::::::M       M::::::::M R:::::RRRRRR:::::R
 EE:::::EEEEEEEE::::E M:::::M             M:::::M   R:::R      R::::R
 E::::::::::::::::::E M:::::M             M:::::M RR::::R      R::::R
 EEEEEEEEEEEEEEEEEEEE MMMMMMM             MMMMMMM RRRRRRR      RRRRRR
-
+```
 ## Create cluster with step
 
 After running below command, you should see your EMR Cluster ID. 
