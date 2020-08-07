@@ -352,6 +352,8 @@ spark.read.csv("s3://covid19-lake/safegraph-open-census-data/csv/data/cbg_b23.cs
     }
     ]
     ```
+- Use Ganglia to see the metrics and gain insights for performance tuning 
+
 
 # Useful links 
 - [Registry of Open Data on AWS](https://registry.opendata.aws/amazon-reviews/)
