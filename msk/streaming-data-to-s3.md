@@ -48,6 +48,15 @@ value.converter=org.apache.kafka.connect.storage.StringConverter
 value.converter.schemas.enable=false
 ```
 
+If you want to convert the data to parquet format. You must use the AvroConverter with ParquetFormat. Attempting to use other Converter will result in a runtime exception.
+
+```
+key.converter=io.confluent.connect.avro.AvroConverter
+key.converter.schema.registry.url=http://10.0.0.0:8081
+value.converter=io.confluent.connect.avro.AvroConverter
+value.converter.schema.registry.url=http://10.0.0.0:8081
+```
+
 Then, define sink connector properties. A sample properties file is available under ``etc/`` in the zip. 
 
 ```
@@ -119,8 +128,8 @@ You should see those objects with keys:
 
 ```
 topics/<YOUR_KAFKA_TOPIC>/partition=0/<YOUR_KAFKA_TOPIC>+0+0000000000.avro
-topics/<YOUR_KAFKA_TOPIC>/partition=0/<YOUR_KAFKA_TOPIC>+0+0000000003.avro
-topics/<YOUR_KAFKA_TOPIC>/partition=0/<YOUR_KAFKA_TOPIC>+0+0000000006.avro
+topics/<YOUR_KAFKA_TOPIC>/partition=0/<YOUR_KAFKA_TOPIC>+0+0000000001.avro
+topics/<YOUR_KAFKA_TOPIC>/partition=0/<YOUR_KAFKA_TOPIC>+0+0000000002.avro
 ...
 ```
 
@@ -179,7 +188,19 @@ java -jar avro-tools-1.7.7.jar tojson <YOUR_KAFKA_TOPIC>+0+0000000000.avro
 {"number":0}
 ```
 
-## Useful links:
+If you want multiple records inside one .avro file, increase the value of ``flush.size``.
+
+## Common issues
+
+NoClassDefFoundError is thrown when using ``io.confluent.connect.s3.format.parquet.ParquetFormat ``
+
+`` java.lang.NoClassDefFoundError: com/google/common/base/Preconditions`` 
+
+Solution
+
+Download the missing jar [guava-17.0.jar](https://www.findjar.com/jar/com/google/guava/guava/17.0/guava-17.0.jar.html) and add it back to ``/lib``
+
+## Useful links
 
 - [Amazon S3 Sink Connector for Confluent Platform](https://docs.confluent.io/current/connect/kafka-connect-s3/index.html)
 - [Avor Viewer](https://zymeworks.github.io/avro-viewer/)
