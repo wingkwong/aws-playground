@@ -1,0 +1,10 @@
+{
+  "local": {
+     "path_data": "<interface_files_directory>",
+     "export_path": "<output_files_directory>"
+  },
+  "emr": {
+      "path_data": "s3://foo/bar/input/",
+      "export_path": "s3://foo/bar/output/"
+  }
+}

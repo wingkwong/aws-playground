@@ -1,0 +1,36 @@
+[
+   {
+      "classification":"capacity-scheduler",
+      "properties":{
+         "yarn.scheduler.capacity.resource-calculator":"org.apache.hadoop.yarn.util.resource.DominantResourceCalculator"
+      }
+   },
+   {
+      "classification":"spark",
+      "properties":{
+         "maximizeResourceAllocation":"true"
+      }
+   },
+   {
+      "classification":"spark-defaults",
+      "properties":{
+         "spark.executor.memory":"9728M",
+         "spark.driver.memory":"9728M",
+         "spark.shuffle.spill.compress":"true",
+         "spark.shuffle.compress":"true",
+         "spark.network.timeout":"600s",
+         "spark.executor.instances":"0",
+         "spark.dynamicAllocation.executorIdleTimeout":"600s",
+         "spark.sql.shuffle.partitions":"1024",
+         "spark.dynamicAllocation.enabled":"true",
+         "spark.storage.level":"MEMORY_AND_DISK_SER",
+         "spark.serializer":"org.apache.spark.serializer.KryoSerializer"
+      }
+   },
+   {
+      "Classification":"mapred-site",
+      "Properties":{
+         "mapreduce.map.output.compress":"true"
+      }
+   }
+]
