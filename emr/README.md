@@ -15,6 +15,29 @@ EE:::::EEEEEEEE::::E M:::::M             M:::::M   R:::R      R::::R
 E::::::::::::::::::E M:::::M             M:::::M RR::::R      R::::R
 EEEEEEEEEEEEEEEEEEEE MMMMMMM             MMMMMMM RRRRRRR      RRRRRR
 ```
+
+## Sample Boilerplate
+
+```py
+from pyspark import SparkContext
+from pyspark import SQLContext
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import *
+from pyspark.sql.types import StringType
+from pyspark.sql.functions import col
+from itertools import islice
+
+import sys
+
+if __name__ == '__main__':
+    sqlContext = SQLContext(sc)
+    # YOUR CODE GOES HERE 
+```
+
+## pySpark ETL Boilerplate
+
+https://github.com/wingkwong/aws-playground/tree/master/emr/pySpark-etl-boilerplate/
+
 ## Create cluster with step
 
 After running below command, you should see your EMR Cluster ID. 
@@ -94,7 +117,7 @@ df = spark.read.format("csv").option("header", "true").load("filename.csv")
 df = spark.read.format("<file format>").load("filename.<format>")
 
 # Or using the given method
-df = spark.read.<format method>.("filename.<format>)
+df = spark.read.<format method>.("filename.<format>")
 ```
 
 Replace 0 to null
@@ -257,7 +280,7 @@ spark.read.csv("s3://covid19-lake/safegraph-open-census-data/csv/data/cbg_b23.cs
 
     There seems to be an issue with 5.30.0. It works fine in 5.29.0. (As of 17/06/2020)
 
-# Lession Learnt
+# Lession Learned
 
 - Parentheses are required for multiple conditions in filter
 
