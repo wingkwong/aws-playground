@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
 ## pySpark ETL Boilerplate
 
-https://github.com/wingkwong/aws-playground/tree/master/emr/pySpark-etl-boilerplate/
+https://github.com/wingkwong/aws-playground/tree/master/emr/pyspark-etl-boilerplate/
 
 ## Create cluster with step
 
