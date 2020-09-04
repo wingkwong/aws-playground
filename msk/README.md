@@ -14,7 +14,13 @@ Amazon MSK is a fully managed service that enables you to build and run applicat
 
 - Download [Apache Kafka](https://kafka.apache.org/downloads)
 
-- Upload to ``~/`` and unzip it. Example: ``~/kafka_2.13-2.6.0/``. 
+- Upload to ``~/`` and unzip it. Example: ``~/kafka_2.13-2.6.0/``
+
+- Install ``python3`` by running ``sudo yum install -y python3``
+
+- Install ``java`` by running ``sudo yum install java-1.8.0-openjdk``
+
+- Install ``kafka-python`` by running ``sudo pip install kafka-python``
 
 ## Create Kafka Topic
 
