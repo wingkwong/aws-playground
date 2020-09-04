@@ -10,7 +10,7 @@ Amazon MSK is a fully managed service that enables you to build and run applicat
 
 ## Create a Client Machine
 
-- Create an EC2 instance to create a topic that produces and consumes data. 
+- Create an EC2 instance to create a topic that produces and consumes data as you cannot access Amazon MSK directly from a local machine. The brokers and zookeeper connect string are private. 
 
 - Download [Apache Kafka](https://kafka.apache.org/downloads)
 
