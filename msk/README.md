@@ -8,7 +8,17 @@ Amazon MSK is a fully managed service that enables you to build and run applicat
 
 - [Via Amazon CDK](https://github.com/wingkwong/aws-playground/tree/master/msk/cdk)
 
+## Create a Client Machine
+
+- Create an EC2 instance to create a topic that produces and consumes data. 
+
+- Download [Apache Kafka](https://kafka.apache.org/downloads)
+
+- Upload to ``~/`` and unzip it. Example: ``~/kafka_2.13-2.6.0/``. 
+
 ## Create Kafka Topic
+
+Connect to the client machine
 
 ```bash
 #!/bin/sh
