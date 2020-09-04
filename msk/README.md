@@ -87,3 +87,21 @@ for message in consumer:
 ## Streaming data to Amazon S3
 
 Refer to [streaming-data-to-s3.md](https://github.com/wingkwong/aws-playground/blob/master/msk/streaming-data-to-s3.md)
+
+## Common Issues
+
+Thrown the following error while creating a Kafka topic
+
+```
+Exception in thread "main" kafka.zookeeper.ZooKeeperClientTimeoutException: Timed out waiting for connection while in state: CONNECTING
+    at kafka.zookeeper.ZooKeeperClient.waitUntilConnected(ZooKeeperClient.scala:262)
+    at kafka.zookeeper.ZooKeeperClient.<init>(ZooKeeperClient.scala:119)
+    at kafka.zk.KafkaZkClient$.apply(KafkaZkClient.scala:1865)
+    at kafka.admin.TopicCommand$ZookeeperTopicService$.apply(TopicCommand.scala:360)
+    at kafka.admin.TopicCommand$.main(TopicCommand.scala:55)
+    at kafka.admin.TopicCommand.main(TopicCommand.scala) 
+```
+
+Solution:
+
+Check Securty Group to make sure that the inbound is allowed.
