@@ -7,6 +7,7 @@ There is not a direct way to stream data to Amazon S3. You need a S3 Connector. 
 You should have 
 
 - MSK Cluster
+- Client Machine
 - Apache Kafka topic
 - Producer 
 - S3 bucket
