@@ -12,6 +12,7 @@ Usage:
 """
 
 import sys
+import random
 from datetime import datetime
 from dependencies.spark import start_spark
 from common import df_writer
@@ -69,6 +70,8 @@ def extract_data(spark, log, config):
     log.info("*** extract_data starts: {}".format(datetime.now()))
     # LOGIC GOES HERE
     # EXAMPLE
+    data_frames = {}
+    """
     data_frames = {
         "foo": spark.read.load(
             config["path_data"] + "FILE_NAME",
@@ -89,6 +92,7 @@ def extract_data(spark, log, config):
             inferSchema="false",
         ),
     }
+    """
     log.info("*** extract_data ends: {}".format(datetime.now()))
 
     return data_frames
@@ -102,6 +106,14 @@ def transform_data(spark, log, config, data_frames):
     """
     log.info("*** transform_data starts: {}".format(datetime.now()))
     # LOGIC GOES HERE
+    # EXAMPLE: Pi Estimation
+    def inside(p):
+        x, y = random.random(), random.random()
+        return x*x + y*y < 1
+    NUM_SAMPLES = 100000
+    count = spark.sparkContext.parallelize(range(0, NUM_SAMPLES)) \
+                 .filter(inside).count()
+    print("Pi is roughly %f" % (4.0 * count / NUM_SAMPLES))
     log.info("*** transform_data ends: {}".format(datetime.now()))
     return data_frames
 
@@ -116,6 +128,7 @@ def load_data(spark, log, config, data_frames):
     log.info("*** load_data starts: {}".format(datetime.now()))
     # LOGIC GOES HERE
     # EXAMPLE
+    """
     df_writer(
         data_frames["foo"],
         file_path="{}/bar".format(config["export_path"]),
@@ -123,6 +136,7 @@ def load_data(spark, log, config, data_frames):
         mode="overwrite",
         separator=",",
     )
+    """
     log.info("*** load_data ends: {}".format(datetime.now()))
     return None
 
