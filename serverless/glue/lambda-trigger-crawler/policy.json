@@ -1,0 +1,11 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "lambda-glue-start-crawler",
+            "Effect": "Allow",
+            "Action": "glue:StartCrawler",
+            "Resource": "*"
+        }
+    ]
+}
