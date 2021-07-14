@@ -1,0 +1,62 @@
+version: 0.2
+
+variables:
+  SONARQUBE_URL: "<REDACTED>"
+  SONARQUBE_AUTH_TOKEN: "<REDACTED>"
+  SONARQUBE_PROJECT: "<REDACTED>"
+  AWS_S3_M2_SETTING: "s3://<REDACTED>/settings.xml"
+  AWS_S3_NEXUS_CERT: "s3://<REDACTED>/cacerts"
+  APP_ARTIFACT: "target/<REDACTED>.jar"
+
+phases:
+  install:
+    runtime-versions:
+      java: openjdk8
+    commands:
+      # create ~/.m2 directory
+      - mkdir -p ~/.m2
+      # copy m2 setting file to m2 directory
+      - aws s3 cp ${AWS_S3_M2_SETTING} ~/.m2/settings.xml
+      # copy nexus cert to $JAVA_HOME/jre/lib/security/
+      - aws s3 cp ${AWS_S3_NEXUS_CERT} $JAVA_HOME/jre/lib/security/
+  build:
+    commands:
+      # run tests and package as <REDACTED>.jar
+      # add -DskipTests=true if you want to bypass tests
+      - mvn clean package
+      # perform SAST & SCA
+      - result=$(mvn clean sonar:sonar -Dsonar.projectKey=${SONARQUBE_PROJECT} -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONARQUBE_AUTH_TOKEN})
+      - echo $result
+  post_build:
+    commands:
+      - sonar_link=$(echo $result | egrep -o "you can browse http://[^, ]+")
+      - sonar_task_id=$(echo $result | egrep -o "task\?id=[^ ]+" | cut -d'=' -f2)
+      # Allow time for SonarQube background task to complete
+      - |
+        stat="PENDING";
+        while [ "$stat" != "SUCCESS" ]; do
+          if [ $stat = "FAILED" ] || [ $stat = "CANCELLED" ]; then
+            echo "SonarQube task $sonar_task_id failed";
+            exit 1;
+          fi
+          stat=$(curl -u $SONARQUBE_AUTH_TOKEN $SONARQUBE_URL/api/ce/task\?id=$sonar_task_id | jq -r '.task.status');
+          echo "SonarQube analysis status is $stat";
+          sleep 5;
+        done
+      - sonar_analysis_id=$(curl -u $SONARQUBE_AUTH_TOKEN $SONARQUBE_URL/api/ce/task\?id=$sonar_task_id | jq -r '.task.analysisId')
+      - quality_status=$(curl -u $SONARQUBE_AUTH_TOKEN $SONARQUBE_URL/api/qualitygates/project_status\?analysisId=$sonar_analysis_id | jq -r '.projectStatus.status')
+      - |
+        if [ $quality_status = "ERROR" ] || [ $quality_status = "WARN" ]; then
+          echo "SonarQube analysis complete. Quality Gate Failed. To see why, please check $sonar_link"
+          exit 1;
+        elif [ $quality_status = "OK" ]; then
+          echo "SonarQube analysis complete. Quality Gate Passed. For details, please check $sonar_link"
+        else
+          echo "An unexpected error occurred while attempting to analyze with SonarQube."
+          exit 1;
+        fi
+artifacts:
+  files:
+    - Dockerfile
+    - ${APP_ARTIFACT} # target/<REDACTED>.jar
+  discard-paths: yes # make target/<REDACTED>.jar to <REDACTED>.jar
