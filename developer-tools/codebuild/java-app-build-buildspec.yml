@@ -1,0 +1,35 @@
+version: 0.2
+env:
+  variables:
+    AWS_ECR_REPO: "<REDACTED>"
+    AWS_ECR_REPO_URL: "<REDACTED>.dkr.ecr.<AWS_REGION>.amazonaws.com/<REDACTED>"
+    ECS_CONTAINER_NAME: "<REDACTED>" # it must be same as ``containerDefinitions.name`` in task definition
+phases:
+  install:
+    runtime-versions:
+      java: openjdk8
+  pre_build:
+    commands:
+      - aws ecr get-login-password | docker login --username AWS --password-stdin ${AWS_ECR_REPO_URL}
+  build:
+    commands:
+      - docker build -t ${AWS_ECR_REPO}:${CODEBUILD_BUILD_NUMBER} .
+      - docker tag ${AWS_ECR_REPO}:${CODEBUILD_BUILD_NUMBER} ${AWS_ECR_REPO_URL}:${CODEBUILD_BUILD_NUMBER}
+      - docker tag ${AWS_ECR_REPO}:${CODEBUILD_BUILD_NUMBER} ${AWS_ECR_REPO_URL}:latest
+  post_build:
+    commands:
+      # quit if build phase is failed
+      - bash -c "if [ /"$CODEBUILD_BUILD_SUCCEEDING/" == /"0/" ]; then exit 1; fi"
+      # remove latest tag on ECR first if image-tag-mutability is IMMUTABLE
+      - aws ecr batch-delete-image --repository-name ${AWS_ECR_REPO} --image-ids imageTag=latest
+      - docker push ${AWS_ECR_REPO_URL}:${CODEBUILD_BUILD_NUMBER}
+      - docker push ${AWS_ECR_REPO_URL}:latest
+      # for Amazon ECS standard deployments
+      - printf '[{"name":"%s","imageUri":"%s"}]' ${ECS_CONTAINER_NAME} ${AWS_ECR_REPO_URL}:latest > imagedefinitions.json
+      # for Amazon ECS blue/green deployments 
+      - printf '{"ImageURI":"%s"}' ${AWS_ECR_REPO_URL} > imageDetail.json
+artifacts:
+  files: 
+    # you just need either one
+    - imagedefinitions.json
+    - imageDetail.json
