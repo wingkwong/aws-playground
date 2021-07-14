@@ -1,0 +1,23 @@
+version: 0.2
+env:
+  variables:
+    AWS_S3_FRONTEND_BUCKET_PATH: "s3://<REDACTED>"
+    AWS_CLOUDFRONT_DISTRIBUTION_ID: "<REDACTED>"
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      # install source NPM dependencies
+      - npm ci
+  build:
+    commands:
+      - npm run build
+  post_build:
+    commands:
+      # quit if build phase is failed
+      - bash -c "if [ /"$CODEBUILD_BUILD_SUCCEEDING/" == /"0/" ]; then exit 1; fi"
+      # deploy to target bucket
+      - cd build && aws s3 sync . ${AWS_S3_FRONTEND_BUCKET_PATH} --delete
+      # invalidate cache
+      - aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION_ID} --paths "/*"
