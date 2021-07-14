@@ -1,0 +1,37 @@
+{
+	"family": "sample-task-def",
+	"networkMode": "awsvpc",
+	"containerDefinitions": [{
+		"name": "<YOUR_CONTAINER_NAME>",
+		"image": "XXXXXXXXXXX.dkr.ecr.<AWS_REGION>.amazonaws.com/<YOUR_BASE_IMAGE>:<TAG>",
+		"essential": true,
+		"logConfiguration": {
+			"logDriver": "awslogs",
+			"options": {
+				"awslogs-group": "/ecs/<YOUR_APP_NAME>/<YOUR_CONTAINER_NAME>",
+				"awslogs-region": "<AWS_REGION>",
+				"awslogs-stream-prefix": "ecs"
+			}
+		},
+		"secrets": [{
+			"name": "<YOUR_SECRETS_NAME>",
+			"valueFrom": "<YOUR_SECRET_ARN>"
+		}],
+		"environment": [{
+			"name": "<ENV_VARIABLE_NAME>",
+			"value": "<ENV_VARIABLE_VALUE>"
+		}],
+		"portMappings": [{
+			"containerPort": 8080,
+			"hostPort": 8080,
+			"protocol": "tcp"
+		}]
+	}],
+	"requiresCompatibilities": [
+		"FARGATE"
+	],
+	"cpu": "256",
+	"memory": "512",
+	"executionRoleArn": "<YOUR_ECS_EXECUTION_ROLE_ARN>",
+	"taskRoleArn": "<YOUR_ECS_TASK_ROLE_ARN>"
+}
