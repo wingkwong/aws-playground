@@ -36,6 +36,7 @@ aws ecs create-service \
 --desired-count <DESIRED_COUNT> \
 --launch-type "FARGATE" \
 --platform-version 1.3.0 \
+--health-check-grace-period-seconds 300 \
 --network-configuration "awsvpcConfiguration={subnets=["<YOUR_SUBSETS>"], securityGroups=["<YOUR_SECURITY_GROUPS>"], assignPublicIp=DISABLED}" \
 --load-balancer targetGroupArn=<TARGET_GROUP_ARN>,containerName=<CONTAINER_NAME>,containerPort=<YOUR_CONTAINER_PORT> \
 --service-registries registryArn=<CLOUDMAP_SERVICE>
