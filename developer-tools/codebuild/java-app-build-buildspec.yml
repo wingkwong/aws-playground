@@ -21,7 +21,7 @@ phases:
       # quit if build phase is failed
       - bash -c "if [ /"$CODEBUILD_BUILD_SUCCEEDING/" == /"0/" ]; then exit 1; fi"
       # remove latest tag on ECR first if image-tag-mutability is IMMUTABLE
-      - aws ecr batch-delete-image --repository-name ${AWS_ECR_REPO} --image-ids imageTag=latest
+      - aws ecr batch-delete-image --repository-name ${AWS_ECR_REPO} --image-ids imageTag=latest || 1
       - docker push ${AWS_ECR_REPO_URL}:${CODEBUILD_BUILD_NUMBER}
       - docker push ${AWS_ECR_REPO_URL}:latest
       # for Amazon ECS standard deployments
