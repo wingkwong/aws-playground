@@ -1,0 +1,51 @@
+version: 0.2 
+
+env:
+  variables:
+    CX_FLOW_BUG_TRACKER: "None"
+    CX_FLOW_BUG_TRACKER_IMPL: ${CX_FLOW_BUG_TRACKER}
+    CX_FLOW_EXE: "java -jar /app/cx-flow.jar"
+    CHECKMARX_VERSION: "9.0"
+    CHECKMARX_SETTINGS_OVERRIDE: "false"
+    CHECKMARX_EXCLUDE_FILES: ""
+    CHECKMARX_EXCLUDE_FOLDERS: ""
+    CHECKMARX_CONFIGURATION: "Default Configuration"
+    CHECKMARX_SCAN_PRESET: "Checkmarx Default"
+    CX_FLOW_FILTER_SEVERITY: "High"
+    CX_FLOW_FILTER_CATEGORY: ""
+    CX_FLOW_FILTER_CWE: ""
+    CX_FLOW_FILTER_STATUS: ""
+    CX_FLOW_FILTER_STATE: ""
+    CX_FLOW_ENABLED_VULNERABILITY_SCANNERS: sast
+    CX_TEAM: "/CxServer/"
+    CX_FLOW_BREAK_BUILD: "false"
+    SCA_FILTER_SEVERITY: ""
+    SCA_FILTER_SCORE: ""
+    SCA_THRESHOLDS_SCORE: ""
+    SCA_TEAM: ""
+    PARAMS: ""
+    
+phases: 
+  pre_build: 
+    commands: 
+       - export CX_REPO_NAME=$(basename "$CODEBUILD_SOURCE_REPO_URL" .git)
+       - export CX_REPO_BRANCH=$(basename "$CODEBUILD_WEBHOOK_HEAD_REF") 
+       - |
+         if expr "${CX_REPO_BRANCH}"; then
+           export CX_PROJECT=$(echo "$CODEBUILD_BUILD_ID" | cut -f1 -d:)-${CX_REPO_BRANCH}
+         else
+           export CX_PROJECT=$(echo "$CODEBUILD_BUILD_ID" | cut -f1 -d:)
+         fi
+       - |
+         ${CX_FLOW_EXE} \
+          --scan \
+          --app="${CX_REPO_NAME}" \
+          --namespace="${CX_REPO_NAME}" \
+          --repo-name="${CX_REPO_NAME}" \
+          --repo-url="${CI_REPOSITORY_URL}" \
+          --cx-team="${CX_TEAM}" \
+          --cx-project="${CX_PROJECT}" \
+          --branch="${CX_REPO_BRANCH}" \
+          --spring.profiles.active="${CX_FLOW_ENABLED_VULNERABILITY_SCANNERS}" \
+          --f=. 
+          ${PARAMS}
