@@ -48,3 +48,21 @@ Common flags:
   -h, --help           help for this command
   -v, --verbose int    set log level, use 0 to silence, 4 for debugging and 5 for debugging with AWS debug logging (default 3)
 ```
+
+## Create EKS Cluster
+
+```
+eksctl create cluster \
+--name foo-cluster \
+--version 1.21 \
+--region ap-east-1 \
+--nodegroup-name linux-nodes \
+--node-type t2.micro \
+--nodes 2
+```
+
+## Delete EKS Cluster
+
+```
+eksctl delete cluster --name foo-cluster
+```
