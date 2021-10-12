@@ -39,12 +39,12 @@ phases:
             echo "SonarQube task $sonar_task_id failed";
             exit 1;
           fi
-          stat=$(curl -u $SONARQUBE_AUTH_TOKEN $SONARQUBE_URL/api/ce/task\?id=$sonar_task_id | jq -r '.task.status');
+          stat=$(curl -u "$SONARQUBE_AUTH_TOKEN:" $SONARQUBE_URL/api/ce/task\?id=$sonar_task_id | jq -r '.task.status');
           echo "SonarQube analysis status is $stat";
           sleep 5;
         done
-      - sonar_analysis_id=$(curl -u $SONARQUBE_AUTH_TOKEN $SONARQUBE_URL/api/ce/task\?id=$sonar_task_id | jq -r '.task.analysisId')
-      - quality_status=$(curl -u $SONARQUBE_AUTH_TOKEN $SONARQUBE_URL/api/qualitygates/project_status\?analysisId=$sonar_analysis_id | jq -r '.projectStatus.status')
+      - sonar_analysis_id=$(curl -u "$SONARQUBE_AUTH_TOKEN:" $SONARQUBE_URL/api/ce/task\?id=$sonar_task_id | jq -r '.task.analysisId')
+      - quality_status=$(curl -u "$SONARQUBE_AUTH_TOKEN:" $SONARQUBE_URL/api/qualitygates/project_status\?analysisId=$sonar_analysis_id | jq -r '.projectStatus.status')
       - |
         if [ $quality_status = "ERROR" ] || [ $quality_status = "WARN" ]; then
           echo "SonarQube analysis complete. Quality Gate Failed. To see why, please check $sonar_link"
